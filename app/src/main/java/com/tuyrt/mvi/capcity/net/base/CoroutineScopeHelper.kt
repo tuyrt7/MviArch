@@ -2,6 +2,7 @@ package com.tuyrt.mvi.capcity.net.base
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 /**
@@ -31,4 +32,13 @@ class LaunchBuilder<T> {
 fun <T> CoroutineScope.launchUI(init: LaunchBuilder<T>.() -> Unit) {
     val scopeHelper = CoroutineScopeHelper<T>(this)
     scopeHelper.rxLaunch(init)
+}
+
+fun <T> CoroutineScope.launchFlow(block: suspend () -> T) {
+    launch {
+        flow {
+            val res = block.invoke()
+            emit(res)
+        }
+    }
 }
